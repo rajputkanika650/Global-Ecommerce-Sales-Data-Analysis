@@ -1,0 +1,601 @@
+============================================================
+GLOBAL E-COMMERCE SALES ANALYSIS
+EXCEL PROJECT
+============================================================
+
+
+STEP 1 — IMPORT DATA
+============================================================
+
+1. Excel open karo.
+2. Data → Get Data → From Text/CSV.
+3. File select karo:
+
+01_Dataset/global_ecommerce_sales.csv
+
+4. Load To → Table.
+5. Table ka naam rakho:
+
+SalesData
+
+
+============================================================
+STEP 2 — POWER QUERY DATA CLEANING
+============================================================
+
+Excel:
+Data → From Table/Range
+
+Power Query me:
+
+1. Order_Date ko Date type karo.
+
+2. Quantity ko Whole Number karo.
+
+3. Unit_Price ko Decimal Number karo.
+
+4. Discount_Percent ko Decimal Number karo.
+
+5. Total_Sales ko Decimal Number karo.
+
+6. Shipping_Cost ko Decimal Number karo.
+
+7. Profit ko Decimal Number karo.
+
+
+Remove Duplicates:
+
+Home → Remove Rows → Remove Duplicates
+
+
+Check Missing Values:
+
+Har column me filter open karke null/blank values check karo.
+
+
+============================================================
+STEP 3 — CREATE NEW COLUMNS IN POWER QUERY
+============================================================
+
+Add Column → Date → Year
+
+Column Name:
+
+Year
+
+
+Add Column → Date → Month → Month
+
+Column Name:
+
+Month
+
+
+Add Column → Date → Month → Name of Month
+
+Column Name:
+
+Month_Name
+
+
+Add Column → Date → Quarter → Quarter of Year
+
+Column Name:
+
+Quarter
+
+
+Create Profit Margin:
+
+Add Column → Custom Column
+
+
+Formula:
+
+if [Total_Sales] = 0
+then 0
+else ([Profit] / [Total_Sales]) * 100
+
+
+Column Name:
+
+Profit_Margin
+
+
+Create Discount Amount:
+
+if [Discount_Percent] = 0
+then 0
+else [Total_Sales] * [Discount_Percent] / 100
+
+
+Column Name:
+
+Discount_Amount
+
+
+Then:
+
+Home → Close & Load
+
+
+============================================================
+STEP 4 — EXCEL SHEETS
+============================================================
+
+Create these sheets:
+
+1. Raw_Data
+2. Clean_Data
+3. KPI
+4. Pivot_Analysis
+5. Dashboard
+
+
+============================================================
+STEP 5 — KPI ANALYSIS
+============================================================
+
+Create KPI cards for:
+
+1. Total Sales
+2. Total Profit
+3. Total Orders
+4. Total Customers
+5. Total Products
+6. Total Quantity
+7. Average Order Value
+8. Profit Margin
+
+
+============================================================
+STEP 6 — KPI FORMULAS
+============================================================
+
+Total Sales:
+
+=SUM(SalesData[Total_Sales])
+
+
+Total Profit:
+
+=SUM(SalesData[Profit])
+
+
+Total Quantity:
+
+=SUM(SalesData[Quantity])
+
+
+Total Orders:
+
+=COUNTA(UNIQUE(SalesData[Order_ID]))
+
+
+Total Customers:
+
+=COUNTA(UNIQUE(SalesData[Customer_Name]))
+
+
+Total Products:
+
+=COUNTA(UNIQUE(SalesData[Product_Name]))
+
+
+Average Order Value:
+
+=SUM(SalesData[Total_Sales])/
+COUNTA(UNIQUE(SalesData[Order_ID]))
+
+
+Profit Margin:
+
+=SUM(SalesData[Profit])/
+SUM(SalesData[Total_Sales])*100
+
+
+============================================================
+STEP 7 — PIVOT TABLE 1
+SALES BY COUNTRY
+============================================================
+
+Insert → PivotTable
+
+Rows:
+
+Country
+
+Values:
+
+Total_Sales → Sum
+
+Profit → Sum
+
+Sort:
+
+Largest to Smallest by Total Sales
+
+
+Purpose:
+
+Find top-performing countries.
+
+
+============================================================
+STEP 8 — PIVOT TABLE 2
+SALES BY REGION
+============================================================
+
+Rows:
+
+Region
+
+Values:
+
+Total_Sales → Sum
+
+Profit → Sum
+
+Orders → Count
+
+
+Purpose:
+
+Compare regional performance.
+
+
+============================================================
+STEP 9 — PIVOT TABLE 3
+CATEGORY ANALYSIS
+============================================================
+
+Rows:
+
+Product_Category
+
+Values:
+
+Total_Sales → Sum
+
+Profit → Sum
+
+Quantity → Sum
+
+
+Purpose:
+
+Find best-performing product categories.
+
+
+============================================================
+STEP 10 — PIVOT TABLE 4
+TOP PRODUCTS
+============================================================
+
+Rows:
+
+Product_Name
+
+Values:
+
+Total_Sales → Sum
+
+Profit → Sum
+
+Quantity → Sum
+
+
+Sort:
+
+Largest to Smallest by Sales
+
+
+Apply:
+
+Value Filters → Top 10
+
+
+Purpose:
+
+Find Top 10 Products.
+
+
+============================================================
+STEP 11 — PIVOT TABLE 5
+CUSTOMER SEGMENT
+============================================================
+
+Rows:
+
+Customer_Segment
+
+Values:
+
+Total_Sales → Sum
+
+Profit → Sum
+
+Customer_Name → Count
+
+
+Purpose:
+
+Compare customer segments.
+
+
+============================================================
+STEP 12 — PIVOT TABLE 6
+PAYMENT METHOD
+============================================================
+
+Rows:
+
+Payment_Method
+
+Values:
+
+Total_Sales → Sum
+
+Profit → Sum
+
+Order_ID → Count
+
+
+Purpose:
+
+Analyze payment preferences.
+
+
+============================================================
+STEP 13 — PIVOT TABLE 7
+YEAR-WISE SALES
+============================================================
+
+Rows:
+
+Order_Date
+
+Right Click Date:
+
+Group → Years
+
+
+Values:
+
+Total_Sales → Sum
+
+Profit → Sum
+
+
+Purpose:
+
+Analyze yearly growth.
+
+
+============================================================
+STEP 14 — PIVOT TABLE 8
+MONTH-WISE SALES
+============================================================
+
+Rows:
+
+Order_Date
+
+Group:
+
+Months
+
+
+Values:
+
+Total_Sales → Sum
+
+
+Purpose:
+
+Find monthly sales trends.
+
+
+============================================================
+STEP 15 — CHARTS
+============================================================
+
+Create these charts:
+
+1. Monthly Sales Trend
+   → Line Chart
+
+2. Sales by Country
+   → Bar Chart
+
+3. Sales by Category
+   → Column Chart
+
+4. Sales by Region
+   → Doughnut/Pie Chart
+
+5. Top 10 Products
+   → Horizontal Bar Chart
+
+6. Customer Segment
+   → Column Chart
+
+7. Payment Method
+   → Doughnut Chart
+
+8. Profit by Category
+   → Column Chart
+
+
+============================================================
+STEP 16 — SLICERS
+============================================================
+
+Select any PivotTable.
+
+PivotTable Analyze → Insert Slicer
+
+
+Create slicers for:
+
+1. Country
+2. Region
+3. Product_Category
+4. Customer_Segment
+5. Payment_Method
+6. Year
+
+
+Use:
+
+Report Connections
+
+Connect the slicers to all relevant PivotTables.
+
+
+============================================================
+STEP 17 — DASHBOARD DESIGN
+============================================================
+
+Dashboard layout:
+
+------------------------------------------------------------
+GLOBAL E-COMMERCE SALES DASHBOARD
+------------------------------------------------------------
+
+[ Total Sales ]
+
+[ Total Profit ]
+
+[ Total Orders ]
+
+[ Total Customers ]
+
+------------------------------------------------------------
+
+[ Sales Trend ]
+
+------------------------------------------------------------
+
+[ Sales by Country ]     [ Sales by Category ]
+
+------------------------------------------------------------
+
+[ Top Products ]          [ Customer Segment ]
+
+------------------------------------------------------------
+
+[ Region ]                [ Payment Method ]
+
+------------------------------------------------------------
+
+SLICERS:
+
+Country | Region | Category | Segment | Year
+------------------------------------------------------------
+
+
+============================================================
+STEP 18 — BUSINESS QUESTIONS
+============================================================
+
+Answer these questions:
+
+1. What is the total sales?
+
+2. What is the total profit?
+
+3. Which country generates the highest sales?
+
+4. Which region performs best?
+
+5. Which product category has the highest sales?
+
+6. Which category generates the highest profit?
+
+7. What are the Top 10 products?
+
+8. Who are the Top 10 customers?
+
+9. Which customer segment generates the most revenue?
+
+10. Which payment method is most popular?
+
+11. Which year had the highest sales?
+
+12. Which month had the highest sales?
+
+13. Which products are making losses?
+
+14. Which country has the highest shipping cost?
+
+15. Does higher discount affect profit?
+
+16. Which category has the best profit margin?
+
+17. What is the average order value?
+
+18. What percentage of total sales comes from each category?
+
+
+============================================================
+STEP 19 — FINAL DASHBOARD INSIGHTS
+============================================================
+
+Write 5–10 business insights.
+
+Example:
+
+• The highest revenue comes from the top-performing country.
+
+• The leading product category contributes the largest share
+  of total sales.
+
+• A small number of products contribute significantly to
+  overall revenue.
+
+• Some products generate high sales but comparatively low
+  profit.
+
+• Customer segments show different revenue contributions.
+
+• Payment preferences can help optimize the checkout process.
+
+• High discount levels should be monitored if they reduce
+  profit margins.
+
+
+============================================================
+FINAL EXCEL PROJECT STRUCTURE
+============================================================
+
+04_Excel_Analysis
+│
+├── excel_project_plan.txt
+│
+└── Ecommerce_Sales_Analysis.xlsx
+    │
+    ├── Raw_Data
+    ├── Clean_Data
+    ├── KPI
+    ├── Pivot_Analysis
+    └── Dashboard
+
+
+============================================================
+PROJECT COMPLETION
+============================================================
+
+Tools Used:
+
+✓ Excel
+✓ Power Query
+✓ PivotTable
+✓ PivotChart
+✓ Slicers
+✓ Excel Formulas
+✓ Dashboard
+
+Final Output:
+
+Interactive Global E-commerce Sales Dashboard

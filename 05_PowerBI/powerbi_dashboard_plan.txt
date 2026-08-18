@@ -1,0 +1,918 @@
+============================================================
+GLOBAL E-COMMERCE SALES ANALYSIS
+POWER BI PROJECT
+============================================================
+
+
+STEP 1 — IMPORT DATA
+============================================================
+
+Power BI Desktop open karo.
+
+Home → Get Data → Text/CSV
+
+Select:
+
+01_Dataset/global_ecommerce_sales.csv
+
+Then:
+
+Transform Data
+
+
+============================================================
+STEP 2 — POWER QUERY CLEANING
+============================================================
+
+Power Query me ye columns check karo:
+
+Order_ID
+Order_Date
+Customer_Name
+Customer_Segment
+Country
+Region
+Product_Category
+Product_Name
+Quantity
+Unit_Price
+Discount_Percent
+Total_Sales
+Shipping_Cost
+Profit
+Payment_Method
+
+
+Data Types:
+
+Order_ID              → Text
+Order_Date            → Date
+Customer_Name         → Text
+Customer_Segment      → Text
+Country               → Text
+Region                → Text
+Product_Category      → Text
+Product_Name         → Text
+Quantity              → Whole Number
+Unit_Price            → Decimal Number
+Discount_Percent      → Decimal Number
+Total_Sales           → Decimal Number
+Shipping_Cost         → Decimal Number
+Profit                → Decimal Number
+Payment_Method        → Text
+
+
+Remove duplicate rows.
+
+Remove/handle blank values.
+
+Then:
+
+Home → Close & Apply
+
+
+============================================================
+STEP 3 — CREATE DAX MEASURES
+============================================================
+
+Go to:
+
+Modeling → New Measure
+
+
+------------------------------------------------------------
+1. Total Sales
+------------------------------------------------------------
+
+Total Sales =
+SUM(SalesData[Total_Sales])
+
+
+------------------------------------------------------------
+2. Total Profit
+------------------------------------------------------------
+
+Total Profit =
+SUM(SalesData[Profit])
+
+
+------------------------------------------------------------
+3. Total Quantity
+------------------------------------------------------------
+
+Total Quantity =
+SUM(SalesData[Quantity])
+
+
+------------------------------------------------------------
+4. Total Orders
+------------------------------------------------------------
+
+Total Orders =
+DISTINCTCOUNT(SalesData[Order_ID])
+
+
+------------------------------------------------------------
+5. Total Customers
+------------------------------------------------------------
+
+Total Customers =
+DISTINCTCOUNT(SalesData[Customer_Name])
+
+
+------------------------------------------------------------
+6. Total Products
+------------------------------------------------------------
+
+Total Products =
+DISTINCTCOUNT(SalesData[Product_Name])
+
+
+------------------------------------------------------------
+7. Average Order Value
+------------------------------------------------------------
+
+Average Order Value =
+DIVIDE(
+    [Total Sales],
+    [Total Orders],
+    0
+)
+
+
+------------------------------------------------------------
+8. Profit Margin
+------------------------------------------------------------
+
+Profit Margin =
+DIVIDE(
+    [Total Profit],
+    [Total Sales],
+    0
+) * 100
+
+
+------------------------------------------------------------
+9. Average Sales
+------------------------------------------------------------
+
+Average Sales =
+AVERAGE(SalesData[Total_Sales])
+
+
+------------------------------------------------------------
+10. Average Profit
+------------------------------------------------------------
+
+Average Profit =
+AVERAGE(SalesData[Profit])
+
+
+============================================================
+STEP 4 — DATE TABLE
+============================================================
+
+Modeling → New Table
+
+
+DateTable =
+CALENDAR(
+    MIN(SalesData[Order_Date]),
+    MAX(SalesData[Order_Date])
+)
+
+
+Create these columns:
+
+
+Year =
+YEAR(DateTable[Date])
+
+
+Month Number =
+MONTH(DateTable[Date])
+
+
+Month =
+FORMAT(DateTable[Date], "MMMM")
+
+
+Quarter =
+"Q" & FORMAT(DateTable[Date], "Q")
+
+
+Month Year =
+FORMAT(DateTable[Date], "MMM YYYY")
+
+
+Day =
+DAY(DateTable[Date])
+
+
+Day Name =
+FORMAT(DateTable[Date], "DDDD")
+
+
+============================================================
+STEP 5 — CREATE RELATIONSHIP
+============================================================
+
+Go to Model View.
+
+Connect:
+
+DateTable[Date]
+
+with
+
+SalesData[Order_Date]
+
+
+Relationship:
+
+One-to-Many
+
+DateTable → SalesData
+
+
+Then:
+
+Table Tools → Mark as Date Table
+
+Select:
+
+DateTable[Date]
+
+
+============================================================
+STEP 6 — DASHBOARD PAGE 1
+EXECUTIVE OVERVIEW
+============================================================
+
+Page Name:
+
+Executive Dashboard
+
+
+------------------------------------------------------------
+TOP KPI CARDS
+------------------------------------------------------------
+
+Create Card visuals for:
+
+1. Total Sales
+
+2. Total Profit
+
+3. Total Orders
+
+4. Total Customers
+
+5. Average Order Value
+
+6. Profit Margin
+
+
+------------------------------------------------------------
+CHART 1 — SALES TREND
+------------------------------------------------------------
+
+Visual:
+
+Line Chart
+
+X-Axis:
+
+DateTable[Month Year]
+
+Y-Axis:
+
+[Total Sales]
+
+
+Title:
+
+Monthly Sales Trend
+
+
+------------------------------------------------------------
+CHART 2 — SALES BY COUNTRY
+------------------------------------------------------------
+
+Visual:
+
+Bar Chart
+
+Y-Axis:
+
+Country
+
+X-Axis:
+
+[Total Sales]
+
+
+Title:
+
+Top Countries by Sales
+
+
+Apply Top N filter:
+
+Top 10
+
+
+------------------------------------------------------------
+CHART 3 — SALES BY CATEGORY
+------------------------------------------------------------
+
+Visual:
+
+Column Chart
+
+X-Axis:
+
+Product_Category
+
+Y-Axis:
+
+[Total Sales]
+
+
+Title:
+
+Sales by Product Category
+
+
+------------------------------------------------------------
+CHART 4 — PROFIT BY CATEGORY
+------------------------------------------------------------
+
+Visual:
+
+Column Chart
+
+X-Axis:
+
+Product_Category
+
+Y-Axis:
+
+[Total Profit]
+
+
+Title:
+
+Profit by Category
+
+
+------------------------------------------------------------
+CHART 5 — CUSTOMER SEGMENT
+------------------------------------------------------------
+
+Visual:
+
+Donut Chart
+
+Legend:
+
+Customer_Segment
+
+Values:
+
+[Total Sales]
+
+
+Title:
+
+Sales by Customer Segment
+
+
+------------------------------------------------------------
+CHART 6 — PAYMENT METHOD
+------------------------------------------------------------
+
+Visual:
+
+Donut Chart
+
+Legend:
+
+Payment_Method
+
+Values:
+
+[Total Orders]
+
+
+Title:
+
+Orders by Payment Method
+
+
+============================================================
+STEP 7 — SLICERS
+============================================================
+
+Add slicers:
+
+1. Year
+
+2. Country
+
+3. Region
+
+4. Product Category
+
+5. Customer Segment
+
+6. Payment Method
+
+
+Slicers ko dashboard ke top/left side me arrange karo.
+
+
+============================================================
+STEP 8 — DASHBOARD PAGE 2
+PRODUCT ANALYSIS
+============================================================
+
+Page Name:
+
+Product Analysis
+
+
+------------------------------------------------------------
+CHART 1
+------------------------------------------------------------
+
+Top 10 Products by Sales
+
+Visual:
+
+Bar Chart
+
+Axis:
+
+Product_Name
+
+Values:
+
+[Total Sales]
+
+
+Filter:
+
+Top 10
+
+
+------------------------------------------------------------
+CHART 2
+------------------------------------------------------------
+
+Top 10 Products by Profit
+
+Axis:
+
+Product_Name
+
+Values:
+
+[Total Profit]
+
+
+Filter:
+
+Top 10
+
+
+------------------------------------------------------------
+CHART 3
+------------------------------------------------------------
+
+Quantity Sold by Category
+
+Axis:
+
+Product_Category
+
+Values:
+
+[Total Quantity]
+
+
+------------------------------------------------------------
+CHART 4
+------------------------------------------------------------
+
+Sales vs Profit
+
+Visual:
+
+Scatter Chart
+
+X-Axis:
+
+[Total Sales]
+
+Y-Axis:
+
+[Total Profit]
+
+Legend:
+
+Product_Category
+
+
+============================================================
+STEP 9 — DASHBOARD PAGE 3
+CUSTOMER ANALYSIS
+============================================================
+
+Page Name:
+
+Customer Analysis
+
+
+------------------------------------------------------------
+CHART 1
+------------------------------------------------------------
+
+Top 10 Customers
+
+Axis:
+
+Customer_Name
+
+Values:
+
+[Total Sales]
+
+
+------------------------------------------------------------
+CHART 2
+------------------------------------------------------------
+
+Customers by Segment
+
+Legend:
+
+Customer_Segment
+
+Values:
+
+[Total Customers]
+
+
+------------------------------------------------------------
+CHART 3
+------------------------------------------------------------
+
+Profit by Customer Segment
+
+Axis:
+
+Customer_Segment
+
+Values:
+
+[Total Profit]
+
+
+------------------------------------------------------------
+CHART 4
+------------------------------------------------------------
+
+Average Order Value by Segment
+
+Axis:
+
+Customer_Segment
+
+Values:
+
+[Average Order Value]
+
+
+============================================================
+STEP 10 — DASHBOARD PAGE 4
+REGIONAL ANALYSIS
+============================================================
+
+Page Name:
+
+Regional Analysis
+
+
+------------------------------------------------------------
+CHART 1
+------------------------------------------------------------
+
+Sales by Region
+
+Axis:
+
+Region
+
+Values:
+
+[Total Sales]
+
+
+------------------------------------------------------------
+CHART 2
+------------------------------------------------------------
+
+Profit by Region
+
+Axis:
+
+Region
+
+Values:
+
+[Total Profit]
+
+
+------------------------------------------------------------
+CHART 3
+------------------------------------------------------------
+
+Orders by Region
+
+Axis:
+
+Region
+
+Values:
+
+[Total Orders]
+
+
+------------------------------------------------------------
+CHART 4
+------------------------------------------------------------
+
+Shipping Cost by Country
+
+Axis:
+
+Country
+
+Values:
+
+SUM(SalesData[Shipping_Cost])
+
+
+Filter:
+
+Top 10
+
+
+============================================================
+STEP 11 — YEAR/MONTH ANALYSIS
+============================================================
+
+Create Line Chart.
+
+X-Axis:
+
+DateTable[Month Year]
+
+Y-Axis:
+
+[Total Sales]
+
+Tooltips:
+
+[Total Profit]
+[Total Orders]
+[Average Order Value]
+
+
+Title:
+
+Sales Performance Over Time
+
+
+============================================================
+STEP 12 — DRILL THROUGH
+============================================================
+
+Create a new page:
+
+Product Details
+
+
+Add:
+
+Product_Name
+
+Product_Category
+
+Total Sales
+
+Total Profit
+
+Total Quantity
+
+Profit Margin
+
+
+Set:
+
+Drill-through → Product_Name
+
+
+Now user kisi product par right-click karke:
+
+Drill Through → Product Details
+
+kar sakta hai.
+
+
+============================================================
+STEP 13 — TOOLTIP
+============================================================
+
+Create Tooltip Page.
+
+Add:
+
+Total Sales
+Total Profit
+Total Orders
+Profit Margin
+
+
+Use this tooltip on:
+
+Country
+Category
+Product
+Region
+
+
+============================================================
+STEP 14 — CONDITIONAL FORMATTING
+============================================================
+
+Profit tables me:
+
+Positive Profit → better performance
+
+Negative Profit → highlight as loss
+
+
+Sales tables me:
+
+Data Bars use karo.
+
+
+Profit Margin:
+
+Color scale use karo.
+
+
+============================================================
+STEP 15 — DASHBOARD NAVIGATION
+============================================================
+
+Pages:
+
+1. Executive Dashboard
+2. Product Analysis
+3. Customer Analysis
+4. Regional Analysis
+
+
+Insert:
+
+Buttons → Navigator → Page Navigator
+
+
+Isse dashboard professional lagega.
+
+
+============================================================
+STEP 16 — FINAL DASHBOARD LAYOUT
+============================================================
+
+
+GLOBAL E-COMMERCE SALES DASHBOARD
+
+------------------------------------------------------------
+
+[ TOTAL SALES ]
+[ TOTAL PROFIT ]
+[ TOTAL ORDERS ]
+[ CUSTOMERS ]
+[ AOV ]
+[ PROFIT MARGIN ]
+
+------------------------------------------------------------
+
+             MONTHLY SALES TREND
+
+------------------------------------------------------------
+
+[ TOP COUNTRIES ]       [ SALES BY CATEGORY ]
+
+------------------------------------------------------------
+
+[ PROFIT BY CATEGORY ]  [ CUSTOMER SEGMENT ]
+
+------------------------------------------------------------
+
+[ PAYMENT METHOD ]      [ REGIONAL SALES ]
+
+------------------------------------------------------------
+
+Country | Region | Category | Segment | Year
+
+------------------------------------------------------------
+
+
+============================================================
+STEP 17 — BUSINESS QUESTIONS
+============================================================
+
+Power BI dashboard se answer karo:
+
+1. Total sales kitni hai?
+
+2. Total profit kitna hai?
+
+3. Highest-sales country kaunsa hai?
+
+4. Best region kaunsa hai?
+
+5. Best product category kaunsi hai?
+
+6. Highest-profit category kaunsi hai?
+
+7. Top 10 products kaunse hain?
+
+8. Top customers kaun hain?
+
+9. Best customer segment kaunsa hai?
+
+10. Most-used payment method kaunsa hai?
+
+11. Sales kis month me highest hai?
+
+12. Sales kis year me highest hai?
+
+13. Kaunse products loss generate kar rahe hain?
+
+14. Kis region ka profit highest hai?
+
+15. Average Order Value kitna hai?
+
+
+============================================================
+STEP 18 — FINAL POWER BI OUTPUT
+============================================================
+
+Power BI project me ye pages hone chahiye:
+
+✓ Executive Dashboard
+✓ Product Analysis
+✓ Customer Analysis
+✓ Regional Analysis
+✓ Product Details
+✓ Tooltip Page
+
+
+Main KPIs:
+
+✓ Total Sales
+✓ Total Profit
+✓ Total Orders
+✓ Total Customers
+✓ Total Products
+✓ Average Order Value
+✓ Profit Margin
+
+
+Tools:
+
+✓ Power Query
+✓ DAX
+✓ Data Modeling
+✓ Relationships
+✓ Cards
+✓ Bar Charts
+✓ Column Charts
+✓ Line Charts
+✓ Donut Charts
+✓ Scatter Charts
+✓ Slicers
+✓ Drill-through
+✓ Tooltips
+✓ Page Navigation
+
+
+============================================================
+PROJECT COMPLETE
+============================================================
